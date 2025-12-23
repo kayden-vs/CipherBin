@@ -5,10 +5,11 @@ package html
 
 //lint:file-ignore SA4006 This context is only used if a nested component is present.
 
-import "github.com/a-h/templ"
-import templruntime "github.com/a-h/templ/runtime"
-
-import "github.com/kayden-vs/snippetbox/ui/html/partials"
+import (
+	"github.com/a-h/templ"
+	templruntime "github.com/a-h/templ/runtime"
+	"github.com/kayden-vs/snippetbox/ui/html/partials"
+)
 
 // pass the flash msg too if available otherwise empty string
 func Base(title string, flash string, isAuthenticated bool, csrfToken string, body templ.Component) templ.Component {
@@ -45,7 +46,7 @@ func Base(title string, flash string, isAuthenticated bool, csrfToken string, bo
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, " - Snippetbox</title><link rel=\"stylesheet\" href=\"/static/css/main.css\"></head><body><header><h1><a href=\"/\">Snippetbox</a></h1></header>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, " - CipherBin</title><link rel=\"stylesheet\" href=\"/static/css/main.css\"></head><body><header><h1><a href=\"/\">CipherBin</a></h1></header>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

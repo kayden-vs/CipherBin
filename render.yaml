@@ -2,6 +2,7 @@ services:
   - type: web
     name: snippetbox
     env: go
+    plan: free
     buildCommand: go build -o main ./cmd/web
     startCommand: ./main
     envVars:

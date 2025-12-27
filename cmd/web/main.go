@@ -26,13 +26,16 @@ type application struct {
 
 func main() {
 	addr := flag.String("addr", ":8080", "HTTP server port")
-	dsn := flag.String("dsn", os.Getenv("DATABASE_URL"), "MySQL data source name")
+	dsn := flag.String("dsn", "web:pass@tcp(localhost:3307)/snippetbox?parseTime=true", "MySQL data source name")
 
 	flag.Parse()
 
 	// Use environment variables if set
 	if envAddr := os.Getenv("PORT"); envAddr != "" {
 		*addr = ":" + envAddr
+	}
+	if envDsn := os.Getenv("DATABASE_URL"); envDsn != "" {
+		*dsn = envDsn
 	}
 
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)

@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: snippetbox
+    name: CipherBin
     env: go
     plan: free
     buildCommand: go build -o main ./cmd/web

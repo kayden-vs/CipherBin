@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: snippetbox
+    env: go
+    buildCommand: go build -o main ./cmd/web
+    startCommand: ./main
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: DATABASE_URL
+        sync: false
+    healthCheckPath: /ping

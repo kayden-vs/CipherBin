@@ -1,7 +1,6 @@
 package main
 
 import (
-	"crypto/tls"
 	"database/sql"
 	"flag"
 	"log"
@@ -26,10 +25,15 @@ type application struct {
 }
 
 func main() {
-	addr := flag.String("addr", ":4000", "HTTP server port")
-	dsn := flag.String("dsn", "rohit:eren@/snippetbox?parseTime=true", "MySQL data source name")
+	addr := flag.String("addr", ":8080", "HTTP server port")
+	dsn := flag.String("dsn", os.Getenv("DATABASE_URL"), "MySQL data source name")
 
 	flag.Parse()
+
+	// Use environment variables if set
+	if envAddr := os.Getenv("PORT"); envAddr != "" {
+		*addr = ":" + envAddr
+	}
 
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
@@ -45,7 +49,8 @@ func main() {
 	sessionManager := scs.New()
 	sessionManager.Store = mysqlstore.New(db)
 	sessionManager.Lifetime = 12 * time.Hour
-	sessionManager.Cookie.Secure = true
+	// Set Secure based on environment (Render handles HTTPS)
+	sessionManager.Cookie.Secure = os.Getenv("ENVIRONMENT") == "production"
 
 	app := &application{
 		errorLog:       errorLog,
@@ -56,22 +61,17 @@ func main() {
 		sessionManager: sessionManager,
 	}
 
-	tlsConfig := &tls.Config{
-		CurvePreferences: []tls.CurveID{tls.X25519, tls.CurveP256},
-	}
-
 	srv := &http.Server{
 		Addr:         *addr,
 		ErrorLog:     errorLog,
 		Handler:      app.routes(),
-		TLSConfig:    tlsConfig,
 		IdleTimeout:  1 * time.Minute,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
 	infoLog.Printf("Starting server on %s", *addr)
 
-	err = srv.ListenAndServeTLS("./tls/cert.pem", "./tls/key.pem")
+	err = srv.ListenAndServe()
 	errorLog.Fatal(err)
 }
 

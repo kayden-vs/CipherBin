@@ -28,6 +28,7 @@ type application struct {
 func main() {
 	addr := flag.String("addr", ":4000", "HTTP server port")
 	dsn := flag.String("dsn", "rohit:eren@/snippetbox?parseTime=true", "MySQL data source name")
+	useTLS := flag.Bool("tls", true, "Enable HTTPS with TLS") // Add this line
 
 	flag.Parse()
 
@@ -45,7 +46,7 @@ func main() {
 	sessionManager := scs.New()
 	sessionManager.Store = mysqlstore.New(db)
 	sessionManager.Lifetime = 12 * time.Hour
-	sessionManager.Cookie.Secure = true
+	sessionManager.Cookie.Secure = *useTLS // Change this line
 
 	app := &application{
 		errorLog:       errorLog,
@@ -69,9 +70,15 @@ func main() {
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
-	infoLog.Printf("Starting server on %s", *addr)
 
-	err = srv.ListenAndServeTLS("./tls/cert.pem", "./tls/key.pem")
+	// Change the server start logic
+	if *useTLS {
+		infoLog.Printf("Starting HTTPS server on %s", *addr)
+		err = srv.ListenAndServeTLS("./tls/cert.pem", "./tls/key.pem")
+	} else {
+		infoLog.Printf("Starting HTTP server on %s", *addr)
+		err = srv.ListenAndServe()
+	}
 	errorLog.Fatal(err)
 }
 

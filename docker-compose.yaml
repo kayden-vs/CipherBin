@@ -46,7 +46,7 @@ services:
       db:
         # Wait until MySQL healthcheck passes before starting web
         condition: service_healthy
-    command: ["./main", "-addr=:8080", "-dsn=web:pass@tcp(db:3306)/snippetbox?parseTime=true"]
+    command: ["./main", "-addr=:8080", "-dsn=web:pass@tcp(db:3306)/snippetbox?parseTime=true", "-tls=false"]
 
 # Named volumes for data persistence
 volumes:

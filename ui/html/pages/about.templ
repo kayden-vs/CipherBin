@@ -1,0 +1,15 @@
+package pages
+
+import "github.com/kayden-vs/snippetbox/ui/html"
+
+templ AboutPage(aboutContent string) {
+    @html.Base("About", "", false, "", aboutBody(aboutContent))
+}
+
+templ aboutBody(aboutContent string) {
+    <h1> About </h1>
+    <br>
+    <div>
+        <h4>{ aboutContent }</h4>
+    </div>
+}

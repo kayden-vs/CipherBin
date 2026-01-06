@@ -246,3 +246,11 @@ func (app *application) userLogoutPost(w http.ResponseWriter, r *http.Request) {
 func ping(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("OK"))
 }
+
+func (app *application) about(w http.ResponseWriter, r *http.Request) {
+	aboutContent := "CipherBin provides a clean, minimal interface for creating, viewing, and managing code snippets with automatic expiration. It features user authentication, session management, and a responsive design suitable for developers who need a quick way to share code samples."
+
+	app.RenderPage(w, r, func(flash string, isAuthenticated bool, csrfToken string) templ.Component {
+		return pages.AboutPage(aboutContent)
+	})
+}

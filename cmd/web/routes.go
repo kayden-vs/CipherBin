@@ -40,6 +40,7 @@ func (app *application) routes() http.Handler {
 		r.Post("/user/signup", app.userSignupPost)
 		r.Get("/user/login", app.userLogin)
 		r.Post("/user/login", app.userLoginPost)
+		r.Get("/about", app.about)
 
 		// --- Authenticated-Only Routes ---
 		r.Group(func(r chi.Router) {

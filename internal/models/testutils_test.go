@@ -4,10 +4,12 @@ import (
 	"database/sql"
 	"os"
 	"testing"
+
+	_ "github.com/lib/pq"
 )
 
 func newTestDB(t *testing.T) *sql.DB {
-	db, err := sql.Open("mysql", "test_web:pass@/test_snippetbox?parseTime=true&multiStatements=true")
+	db, err := sql.Open("postgres", "postgres://test_web:pass@localhost/test_snippetbox?sslmode=disable")
 	if err != nil {
 		t.Fatal(err)
 	}

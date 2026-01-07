@@ -9,11 +9,11 @@ import (
 	"os"
 	"time"
 
-	"github.com/alexedwards/scs/mysqlstore"
+	"github.com/alexedwards/scs/postgresstore"
 	"github.com/alexedwards/scs/v2"
 	"github.com/go-playground/form"
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/kayden-vs/snippetbox/internal/models"
+	_ "github.com/lib/pq"
 )
 
 type application struct {
@@ -27,7 +27,7 @@ type application struct {
 
 func main() {
 	addr := flag.String("addr", ":4000", "HTTP server port")
-	dsn := flag.String("dsn", "rohit:eren@/snippetbox?parseTime=true", "MySQL data source name")
+	dsn := flag.String("dsn", "postgres://web:pass@localhost/snippetbox?sslmode=disable", "PostgreSQL data source name")
 	useTLS := flag.Bool("tls", true, "Enable HTTPS with TLS") // Add this line
 
 	flag.Parse()
@@ -44,7 +44,7 @@ func main() {
 	formDecoder := form.NewDecoder()
 
 	sessionManager := scs.New()
-	sessionManager.Store = mysqlstore.New(db)
+	sessionManager.Store = postgresstore.New(db)
 	sessionManager.Lifetime = 12 * time.Hour
 	sessionManager.Cookie.Secure = *useTLS // Change this line
 
@@ -83,7 +83,7 @@ func main() {
 }
 
 func openDB(dsn string) (*sql.DB, error) {
-	db, err := sql.Open("mysql", dsn)
+	db, err := sql.Open("postgres", dsn)
 	if err != nil {
 		return nil, err
 	}

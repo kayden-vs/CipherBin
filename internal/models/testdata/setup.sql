@@ -1,21 +1,22 @@
-CREATE TABLE snippets (
-    id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS snippets (
+    id SERIAL PRIMARY KEY,
     title VARCHAR(100) NOT NULL,
     content TEXT NOT NULL,
-    created DATETIME NOT NULL,
-    expires DATETIME NOT NULL
+    created TIMESTAMP NOT NULL DEFAULT NOW(),
+    expires TIMESTAMP NOT NULL
 );
 
-CREATE INDEX idx_snippets_created ON snippets(created);
+CREATE INDEX IF NOT EXISTS idx_snippets_created ON snippets(created);
 
-CREATE TABLE users (
-    id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     hashed_password CHAR(60) NOT NULL,
-    created DATETIME NOT NULL
+    created TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
+ALTER TABLE users DROP CONSTRAINT IF EXISTS users_uc_email;
 ALTER TABLE users ADD CONSTRAINT users_uc_email UNIQUE (email);
 
 INSERT INTO users (name, email, hashed_password, created) VALUES (

@@ -2,29 +2,20 @@ version: '3.8'
 
 services:
   db:
-    image: mysql:8.0
+    image: postgres:16-alpine
     container_name: snippetbox_db
     restart: unless-stopped
     environment:
-      # Root password for MySQL
-      MYSQL_ROOT_PASSWORD: rootpassword
-      # Database name to create automatically
-      MYSQL_DATABASE: snippetbox
-      # User to create automatically
-      MYSQL_USER: web
-      # Password for the user
-      MYSQL_PASSWORD: pass
+      POSTGRES_DB: snippetbox
+      POSTGRES_USER: web
+      POSTGRES_PASSWORD: pass
     ports:
-      # Expose MySQL on host port 3307
-      - "3307:3306"
+      - "5432:5432"
     volumes:
-      # Persist database data between container restarts
-      - mysql_data:/var/lib/mysql
-      # Initialize database with setup script
+      - postgres_data:/var/lib/postgresql/data
       - ./setup.sql:/docker-entrypoint-initdb.d/setup.sql
     healthcheck:
-      # Check if MySQL is ready to accept connections
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      test: ["CMD-SHELL", "pg_isready -U web -d snippetbox"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -38,17 +29,13 @@ services:
     ports:
       - "8080:8080"
     environment:
-      # Format: user:password@tcp(host:port)/database?parseTime=true
-      DB_DSN: "web:pass@tcp(db:3306)/snippetbox?parseTime=true"
-      # Server address to listen on
+      DB_DSN: "host=db port=5432 user=web password=pass dbname=snippetbox sslmode=disable"
       ADDR: ":8080"
     depends_on:
       db:
-        # Wait until MySQL healthcheck passes before starting web
         condition: service_healthy
-    command: ["./main", "-addr=:8080", "-dsn=web:pass@tcp(db:3306)/snippetbox?parseTime=true"]
+    command: ["./main", "-addr=:8080", "-dsn=host=db port=5432 user=web password=pass dbname=snippetbox sslmode=disable", "-tls=false"]
 
-# Named volumes for data persistence
 volumes:
-  mysql_data:
+  postgres_data:
     driver: local

@@ -24,8 +24,8 @@ CipherBin provides a clean, minimal interface for creating, viewing, and managin
 | Backend | Go 1.24+ |
 | Router | chi |
 | Templates | templ |
-| Database | MySQL 8.0 |
-| Sessions | SCS with MySQL store |
+| Database | PostgreSQL  |
+| Sessions | SCS with Postgresql store |
 | Forms | go-playground/form |
 
 ## Project Structure
@@ -49,37 +49,8 @@ CipherBin/
 ### Prerequisites
 
 - Go 1.24 or higher
-- MySQL 8.0
+- Postgres 8.0
 - [templ](https://templ.guide/) CLI (for template generation)
-
-### Local Development
-
-1. **Clone the repository**
-
-   ```bash
-   git clone https://github.com/kayden-vs/CipherBin.git
-   cd CipherBin
-   ```
-
-2. **Set up the database**
-
-   ```bash
-   mysql -u root -p < setup.sql
-   ```
-
-3. **Generate templ files**
-
-   ```bash
-   templ generate
-   ```
-
-4. **Run the application**
-
-   ```bash
-   go run ./cmd/web -addr=:4000 -dsn="user:password@/snippetbox?parseTime=true"
-   ```
-
-5. Open your browser at `https://localhost:4000`
 
 ### Using Docker
 
@@ -89,7 +60,7 @@ The easiest way to run CipherBin is with Docker Compose:
 docker-compose up -d
 ```
 
-This starts both the MySQL database and the web application.  Access the app at `http://localhost:8080`.
+This starts both the Postgres database and the web application.  Access the app at `http://localhost:8080`.
 
 To stop the services:
 
@@ -102,7 +73,7 @@ docker-compose down
 | Flag | Default | Description |
 |------|---------|-------------|
 | `-addr` | `:4000` | HTTP server address |
-| `-dsn` | - | MySQL data source name |
+| `-dsn` | - | Postgres data source name |
 
 ## Database Schema
 

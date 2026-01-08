@@ -11,7 +11,7 @@ import (
 )
 
 type UserModelInterface interface {
-	Insert(name, email, password string) error
+	Insert(name, email, password string) (int, error)
 	Authenticate(email, password string) (int, error)
 	Exists(id int) (bool, error)
 }
@@ -28,28 +28,30 @@ type UserModel struct {
 	DB *sql.DB
 }
 
-func (m *UserModel) Insert(name, email, password string) error {
+func (m *UserModel) Insert(name, email, password string) (int, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 12)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
-	stmt := `INSERT INTO users (name, email, hashed_password, created)
-    VALUES($1, $2, $3, NOW())`
+	var id int
 
-	_, err = m.DB.Exec(stmt, name, email, string(hashedPassword))
+	stmt := `INSERT INTO users (name, email, hashed_password, created)
+    VALUES($1, $2, $3, NOW()) RETURNING id`
+
+	err = m.DB.QueryRow(stmt, name, email, hashedPassword).Scan(&id)
 	if err != nil {
 		// Checking if the error is for duplicate email
 		var pgError *pq.Error
 		if errors.As(err, &pgError) {
 			if pgError.Code == "23505" && strings.Contains(pgError.Constraint, "users_uc_email") {
-				return ErrDuplicateEmail
+				return 0, ErrDuplicateEmail
 			}
 		}
-		return err
+		return 0, err
 	}
 
-	return nil
+	return id, nil
 }
 
 func (m *UserModel) Authenticate(email, password string) (int, error) {

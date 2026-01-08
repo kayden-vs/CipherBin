@@ -4,12 +4,12 @@ import "github.com/kayden-vs/snippetbox/internal/models"
 
 type UserModel struct{}
 
-func (m *UserModel) Insert(name, email, password string) error {
+func (m *UserModel) Insert(name, email, password string) (int, error) {
 	switch email {
 	case "dupe@example.com":
-		return models.ErrDuplicateEmail
+		return 0, models.ErrDuplicateEmail
 	default:
-		return nil
+		return 1, nil
 	}
 }
 

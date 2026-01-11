@@ -13,6 +13,9 @@ templ NavBar(isAuthenticated bool, csrfToken string){
         </div>
     if isAuthenticated{
         <div>
+            <a href="/account/view">Account</a>
+        </div>
+        <div>
             <form action='/user/logout' method='POST'>
                 <input type='hidden' name='csrf_token' value={ csrfToken }/>
                 <button>Logout</button>

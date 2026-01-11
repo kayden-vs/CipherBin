@@ -7,9 +7,7 @@ templ NavBar(isAuthenticated bool, csrfToken string){
         <div>
             <a href='/'>Home</a>
             <a href='/about'>About</a>
-            if isAuthenticated{
-                <a href='/snippet/create'>Create snippet</a>
-            }
+            <a href='/snippet/create'>Create snippet</a>
         </div>
     if isAuthenticated{
         <div>

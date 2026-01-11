@@ -1,6 +1,8 @@
 package mocks
 
-import "github.com/kayden-vs/snippetbox/internal/models"
+import (
+	"github.com/kayden-vs/snippetbox/internal/models"
+)
 
 type UserModel struct{}
 
@@ -28,4 +30,8 @@ func (m *UserModel) Exists(id int) (bool, error) {
 	default:
 		return false, nil
 	}
+}
+
+func (m *UserModel) GetUserInfo(id int) (*models.User, error) {
+	return &models.User{}, nil
 }

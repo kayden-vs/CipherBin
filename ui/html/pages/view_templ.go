@@ -16,7 +16,7 @@ import (
 	"github.com/mvdan/xurls"
 )
 
-func ViewSnippet(id int, title, content, created, expires, flash string, isAuthenticated bool, csrfToken string) templ.Component {
+func ViewSnippet(id int, title, content, authorName, expires, flash string, isAuthenticated bool, csrfToken string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -37,7 +37,7 @@ func ViewSnippet(id int, title, content, created, expires, flash string, isAuthe
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = html.Base(title, flash, isAuthenticated, csrfToken, viewContent(id, title, content, created, expires)).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = html.Base(title, flash, isAuthenticated, csrfToken, viewContent(id, title, content, authorName, expires)).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -45,7 +45,7 @@ func ViewSnippet(id int, title, content, created, expires, flash string, isAuthe
 	})
 }
 
-func viewContent(id int, title, content, created, expires string) templ.Component {
+func viewContent(id int, title, content, authorName, expires string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -100,20 +100,20 @@ func viewContent(id int, title, content, created, expires string) templ.Componen
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</code></pre><div class=\"metadata\"><time>Created: ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</code></pre><div class=\"metadata\"><strong>Author: ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var5 string
-		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(created)
+		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(authorName)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/html/pages/view.templ`, Line: 23, Col: 35}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/html/pages/view.templ`, Line: 23, Col: 39}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</time> <time>Expires: ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</strong> <time>Expires: ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

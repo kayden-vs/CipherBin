@@ -4,7 +4,8 @@ CREATE TABLE IF NOT EXISTS snippets (
     title VARCHAR(100) NOT NULL,
     content TEXT NOT NULL,
     created TIMESTAMP NOT NULL DEFAULT NOW(),
-    expires TIMESTAMP NOT NULL
+    expires TIMESTAMP NOT NULL,
+    author_name VARCHAR(255) NOT NULL
 );
 
 CREATE INDEX IF NOT EXISTS idx_snippets_created ON snippets(created);
@@ -31,23 +32,26 @@ CREATE TABLE IF NOT EXISTS sessions (
 CREATE INDEX IF NOT EXISTS sessions_expiry_idx ON sessions (expiry);
 
 -- Insert some sample data for testing (optional)
-INSERT INTO snippets (title, content, created, expires) VALUES (
+INSERT INTO snippets (title, content, created, expires, author_name) VALUES (
     'An old silent pond',
     E'An old silent pond...\nA frog jumps into the pond,\nsplash! Silence again.\n\n– Matsuo Bashō',
     NOW(),
-    NOW() + INTERVAL '365 days'
+    NOW() + INTERVAL '365 days',
+    'Anonymous'
 );
 
-INSERT INTO snippets (title, content, created, expires) VALUES (
+INSERT INTO snippets (title, content, created, expires, author_name) VALUES (
     'Over the wintry forest',
     E'Over the wintry\nforest, winds howl in rage\nwith no leaves to blow.\n\n– Natsume Soseki',
     NOW(),
-    NOW() + INTERVAL '365 days'
+    NOW() + INTERVAL '365 days',
+    'Anonymous'
 );
 
-INSERT INTO snippets (title, content, created, expires) VALUES (
+INSERT INTO snippets (title, content, created, expires, author_name) VALUES (
     'First autumn morning',
     E'First autumn morning\nthe mirror I stare into\nshows my father''s face.\n\n– Murakami Kijo',
     NOW(),
-    NOW() + INTERVAL '7 days'
+    NOW() + INTERVAL '7 days',
+    'Anonymous'
 );

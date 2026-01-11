@@ -3,7 +3,8 @@ CREATE TABLE IF NOT EXISTS snippets (
     title VARCHAR(100) NOT NULL,
     content TEXT NOT NULL,
     created TIMESTAMP NOT NULL DEFAULT NOW(),
-    expires TIMESTAMP NOT NULL
+    expires TIMESTAMP NOT NULL,
+    author_name VARCHAR(255) NOT NULL
 );
 
 CREATE INDEX IF NOT EXISTS idx_snippets_created ON snippets(created);

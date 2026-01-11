@@ -8,11 +8,11 @@ import (
     "github.com/mvdan/xurls"
 )
 
-templ ViewSnippet(id int, title, content, created, expires, flash string, isAuthenticated bool, csrfToken string){
-    @html.Base(title, flash,isAuthenticated, csrfToken, viewContent(id, title, content, created, expires))
+templ ViewSnippet(id int, title, content, authorName, expires, flash string, isAuthenticated bool, csrfToken string){
+    @html.Base(title, flash,isAuthenticated, csrfToken, viewContent(id, title, content, authorName, expires))
 }
 
-templ viewContent(id int, title, content, created, expires string){
+templ viewContent(id int, title, content, authorName, expires string){
     <div class='snippet'>
         <div class='metadata'>
             <strong>{title}</strong>
@@ -20,7 +20,7 @@ templ viewContent(id int, title, content, created, expires string){
         </div>
         <pre><code>@templ.Raw(linkify(content))</code></pre>
         <div class='metadata'>
-            <time>Created: {created}</time>
+            <strong>Author: {authorName}</strong>
             <time>Expires: {expires}</time>
         </div>
     </div>

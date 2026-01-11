@@ -7,29 +7,30 @@ import (
 )
 
 type SnippetModelInterface interface {
-	Insert(title string, content string, expires int) (int, error)
+	Insert(title string, content string, expires int, authorName string) (int, error)
 	Get(id int) (*Snippet, error)
 	Latest() ([]*Snippet, error)
 }
 
 type Snippet struct {
-	ID      int
-	Title   string
-	Content string
-	Created time.Time
-	Expires time.Time
+	ID         int
+	Title      string
+	Content    string
+	Created    time.Time
+	Expires    time.Time
+	AuthorName string
 }
 
 type SnippetModel struct {
 	DB *sql.DB
 }
 
-func (m *SnippetModel) Insert(title string, content string, expires int) (int, error) {
-	stmt := `INSERT INTO snippets (title, content, created, expires)
-	VALUES($1, $2, NOW(), NOW() + INTERVAL '1 day' * $3) RETURNING id`
+func (m *SnippetModel) Insert(title string, content string, expires int, authorName string) (int, error) {
+	stmt := `INSERT INTO snippets (title, content, created, expires, author_name)
+	VALUES($1, $2, NOW(), NOW() + INTERVAL '1 day' * $3, $4) RETURNING id`
 
 	var id int
-	err := m.DB.QueryRow(stmt, title, content, expires).Scan(&id)
+	err := m.DB.QueryRow(stmt, title, content, expires, authorName).Scan(&id)
 	if err != nil {
 		return 0, err
 	}
@@ -38,12 +39,12 @@ func (m *SnippetModel) Insert(title string, content string, expires int) (int, e
 }
 
 func (m *SnippetModel) Get(id int) (*Snippet, error) {
-	stmt := `SELECT id, title, content, created, expires FROM snippets
+	stmt := `SELECT id, title, content, created, expires, author_name FROM snippets
 	WHERE expires > NOW() AND id = $1`
 
 	row := m.DB.QueryRow(stmt, id)
 	s := &Snippet{}
-	err := row.Scan(&s.ID, &s.Title, &s.Content, &s.Created, &s.Expires)
+	err := row.Scan(&s.ID, &s.Title, &s.Content, &s.Created, &s.Expires, &s.AuthorName)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrNoRecord
@@ -56,7 +57,7 @@ func (m *SnippetModel) Get(id int) (*Snippet, error) {
 }
 
 func (m *SnippetModel) Latest() ([]*Snippet, error) {
-	stmt := `SELECT id, title, content, created, expires FROM snippets
+	stmt := `SELECT id, title, content, created, expires, author_name FROM snippets
 	WHERE expires > NOW() ORDER BY id DESC LIMIT 10`
 
 	rows, err := m.DB.Query(stmt)
@@ -68,7 +69,7 @@ func (m *SnippetModel) Latest() ([]*Snippet, error) {
 	snippets := []*Snippet{}
 	for rows.Next() {
 		s := &Snippet{}
-		err = rows.Scan(&s.ID, &s.Title, &s.Content, &s.Created, &s.Expires)
+		err = rows.Scan(&s.ID, &s.Title, &s.Content, &s.Created, &s.Expires, &s.AuthorName)
 		if err != nil {
 			return nil, err
 		}

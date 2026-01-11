@@ -44,11 +44,10 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	createdStr := snippet.Created.Format("02 Jan 2006 at 15:04")
+	authorName := snippet.AuthorName
 	expiresStr := snippet.Expires.Format("02 Jan 2006 at 15:04")
 	app.RenderPage(w, r, func(flash string, isAuthenticated bool, csrfToken string) templ.Component {
-		return pages.ViewSnippet(snippet.ID, snippet.Title, snippet.Content, createdStr, expiresStr, flash, isAuthenticated, csrfToken)
-
+		return pages.ViewSnippet(snippet.ID, snippet.Title, snippet.Content, authorName, expiresStr, flash, isAuthenticated, csrfToken)
 	})
 }
 
@@ -77,7 +76,16 @@ func (app *application) snippetCreatePost(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	id, err := app.snippets.Insert(form.Title, form.Content, form.Expires)
+	// Get the authenticated user's name
+	userID := app.sessionManager.GetInt(r.Context(), "authenticatedUserID")
+	user, err := app.users.GetUserInfo(userID)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+	authorName := user.Name
+
+	id, err := app.snippets.Insert(form.Title, form.Content, form.Expires, authorName)
 	if err != nil {
 		app.serverError(w, err)
 		return

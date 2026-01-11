@@ -7,16 +7,17 @@ import (
 )
 
 var mockSnippet = &models.Snippet{
-	ID:      1,
-	Title:   "An old silent Pond",
-	Content: "An old silent Pond...",
-	Created: time.Now(),
-	Expires: time.Now(),
+	ID:         1,
+	Title:      "An old silent Pond",
+	Content:    "An old silent Pond...",
+	Created:    time.Now(),
+	Expires:    time.Now(),
+	AuthorName: "Test User",
 }
 
 type SnippetModel struct{}
 
-func (m *SnippetModel) Insert(title string, content string, expires int) (int, error) {
+func (m *SnippetModel) Insert(title string, content string, expires int, authorName string) (int, error) {
 	return 2, nil
 }
 

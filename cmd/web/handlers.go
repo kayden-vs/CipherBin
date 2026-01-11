@@ -265,3 +265,17 @@ func (app *application) about(w http.ResponseWriter, r *http.Request) {
 		return pages.AboutPage(aboutContent)
 	})
 }
+
+func (app *application) viewAccount(w http.ResponseWriter, r *http.Request) {
+	id := app.sessionManager.GetInt(r.Context(), "authenticatedUserID")
+
+	user, err := app.users.GetUserInfo(id)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	app.RenderPage(w, r, func(flash string, isAuthenticated bool, csrfToken string) templ.Component {
+		return pages.AccountPage(user)
+	})
+}

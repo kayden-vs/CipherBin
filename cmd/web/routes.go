@@ -49,6 +49,7 @@ func (app *application) routes() http.Handler {
 			r.Get("/snippet/create", app.snippetCreate)
 			r.Post("/snippet/create", app.snippetCreatePost)
 			r.Post("/user/logout", app.userLogoutPost)
+			r.Get("/account/view", app.viewAccount)
 		})
 	})
 

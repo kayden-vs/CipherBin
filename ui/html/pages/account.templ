@@ -1,0 +1,25 @@
+package pages
+
+import "github.com/kayden-vs/snippetbox/internal/models"
+import "github.com/kayden-vs/snippetbox/ui/html"
+
+templ AccountPage(user *models.User){
+    @html.Base("Account", "", true, "", accountContent(user))
+}
+
+templ accountContent(user *models.User) {
+    <table>
+        <tr>
+            <th>Name</th>
+            <th> { user.Name }</th>
+        </tr>
+        <tr>
+            <th>Email</th>
+            <th>{ user.Email }</th>
+        </tr>
+        <tr>
+            <th>Joined</th>
+            <th>{ user.Created.Format("January 2, 2006") }</th>
+        </tr>
+    </table>
+}

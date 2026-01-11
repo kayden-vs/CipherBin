@@ -1,7 +1,12 @@
 package pages
 
-import "github.com/kayden-vs/snippetbox/ui/html"
-import "strconv"
+import (
+    "fmt"
+    "strconv"
+
+    "github.com/kayden-vs/snippetbox/ui/html"
+    "github.com/mvdan/xurls"
+)
 
 templ ViewSnippet(id int, title, content, created, expires, flash string, isAuthenticated bool, csrfToken string){
     @html.Base(title, flash,isAuthenticated, csrfToken, viewContent(id, title, content, created, expires))
@@ -13,10 +18,18 @@ templ viewContent(id int, title, content, created, expires string){
             <strong>{title}</strong>
             <span>#{strconv.Itoa(id)}</span>
         </div>
-        <pre><code>{content}</code></pre>
+        <pre><code>@templ.Raw(linkify(content))</code></pre>
         <div class='metadata'>
             <time>Created: {created}</time>
             <time>Expires: {expires}</time>
         </div>
     </div>
+}
+
+func linkify(text string) string {
+    re := xurls.Strict
+
+    return re.ReplaceAllStringFunc(text, func(url string) string {
+        return fmt.Sprintf(`<a href="%s">%s</a>`, url, url)
+    })
 }

@@ -11,7 +11,6 @@ CipherBin provides a clean, minimal interface for creating, viewing, and managin
 ## Features
 
 - **Snippet Management** - Create, view, and list code snippets with customizable expiration (1 day, 1 week, or 1 year)
-- **Anonymous Snippet Creation** - Create snippets without requiring authentication
 - **Author Attribution** - Snippets display author names for authenticated users
 - **Auto-Linking** - URLs in snippet content are automatically converted to clickable links
 - **User Authentication** - Secure signup and login with bcrypt password hashing

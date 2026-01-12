@@ -4,15 +4,19 @@ A lightweight, self-hosted web application for storing and sharing code snippets
 
 ## Overview
 
-CipherBin provides a clean, minimal interface for creating, viewing, and managing code snippets with automatic expiration.  It features user authentication, session management, and a responsive design suitable for developers who need a quick way to share code samples.
+CipherBin provides a clean, minimal interface for creating, viewing, and managing code snippets with automatic expiration.  It features user authentication, session management, and a responsive design that works on all devices.
 
 **Live Demo:** [cipherbin.onrender.com](https://cipherbin.onrender.com)
 
 ## Features
 
 - **Snippet Management** - Create, view, and list code snippets with customizable expiration (1 day, 1 week, or 1 year)
+- **Anonymous Snippet Creation** - Create snippets without requiring authentication
+- **Author Attribution** - Snippets display author names for authenticated users
+- **Auto-Linking** - URLs in snippet content are automatically converted to clickable links
 - **User Authentication** - Secure signup and login with bcrypt password hashing
-- **Session Management** - Persistent sessions stored in MySQL with automatic cleanup
+- **Account Management** - User account section with password change functionality
+- **Session Management** - Persistent sessions stored in PostgreSQL with automatic cleanup
 - **CSRF Protection** - Built-in cross-site request forgery protection
 - **TLS Support** - HTTPS enabled for secure connections
 - **Docker Ready** - Full Docker and Docker Compose support for easy deployment
@@ -41,7 +45,7 @@ CipherBin/
 │   └── static/        # CSS, JavaScript, images
 ├── setup.sql          # Database schema
 ├── Dockerfile
-└── docker-compose. yaml
+└── docker-compose.yaml
 ```
 
 ## Getting Started
@@ -109,4 +113,4 @@ Contributions are welcome.  Please open an issue to discuss proposed changes bef
 
 ## License
 
-This project is open source.  See the repository for license details. 
+This project is open source.  See the repository for license details.

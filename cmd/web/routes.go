@@ -50,6 +50,8 @@ func (app *application) routes() http.Handler {
 			r.Post("/snippet/create", app.snippetCreatePost)
 			r.Post("/user/logout", app.userLogoutPost)
 			r.Get("/account/view", app.viewAccount)
+			r.Get("/account/password/update", app.updatePassword)
+			r.Post("/account/password/update", app.updatePasswordPost)
 		})
 	})
 

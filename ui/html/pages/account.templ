@@ -3,11 +3,12 @@ package pages
 import "github.com/kayden-vs/snippetbox/internal/models"
 import "github.com/kayden-vs/snippetbox/ui/html"
 
-templ AccountPage(user *models.User){
-    @html.Base("Account", "", true, "", accountContent(user))
+templ AccountPage(user *models.User, flash string, csrfToken string){
+    @html.Base("Account", flash , true, csrfToken, accountContent(user))
 }
 
 templ accountContent(user *models.User) {
+    <h2>Your Account</h2>
     <table>
         <tr>
             <th>Name</th>
@@ -22,4 +23,8 @@ templ accountContent(user *models.User) {
             <th>{ user.Created.Format("January 2, 2006") }</th>
         </tr>
     </table>
+    <br>
+    <div style="margin-top: 1.5rem;">
+        <a href="/account/password/update" class="button">Change password</a>
+    </div>
 }

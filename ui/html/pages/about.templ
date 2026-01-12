@@ -2,8 +2,8 @@ package pages
 
 import "github.com/kayden-vs/snippetbox/ui/html"
 
-templ AboutPage(aboutContent string) {
-    @html.Base("About", "", false, "", aboutBody(aboutContent))
+templ AboutPage(aboutContent string, csrfToken string) {
+    @html.Base("About", "", false, csrfToken, aboutBody(aboutContent))
 }
 
 templ aboutBody(aboutContent string) {

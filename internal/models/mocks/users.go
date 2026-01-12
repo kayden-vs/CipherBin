@@ -35,3 +35,11 @@ func (m *UserModel) Exists(id int) (bool, error) {
 func (m *UserModel) GetUserInfo(id int) (*models.User, error) {
 	return &models.User{}, nil
 }
+
+func (m *UserModel) ComparePassword(id int, password string) error {
+	return nil
+}
+
+func (m *UserModel) UpdatePassword(id int, password string) error {
+	return nil
+}

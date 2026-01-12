@@ -270,7 +270,7 @@ func (app *application) about(w http.ResponseWriter, r *http.Request) {
 	aboutContent := "CipherBin provides a clean, minimal interface for creating, viewing, and managing code snippets with automatic expiration. It features user authentication, session management, and a responsive design suitable for developers who need a quick way to share code samples."
 
 	app.RenderPage(w, r, func(flash string, isAuthenticated bool, csrfToken string) templ.Component {
-		return pages.AboutPage(aboutContent)
+		return pages.AboutPage(aboutContent, csrfToken)
 	})
 }
 
@@ -284,6 +284,79 @@ func (app *application) viewAccount(w http.ResponseWriter, r *http.Request) {
 	}
 
 	app.RenderPage(w, r, func(flash string, isAuthenticated bool, csrfToken string) templ.Component {
-		return pages.AccountPage(user)
+		return pages.AccountPage(user, flash, csrfToken)
 	})
+}
+
+type passwordChangeForm struct {
+	CurrentPassword     string `form:"currentPassword"`
+	NewPassword         string `form:"newPassword"`
+	ConfirmPassword     string `form:"newPasswordConfirmation"`
+	validator.Validator `form:"-"`
+}
+
+func (app *application) updatePassword(w http.ResponseWriter, r *http.Request) {
+	props := pages.PasswordFormParams{}
+	app.RenderPage(w, r, func(flash string, isAuthenticated bool, csrfToken string) templ.Component {
+		props.CSRFToken = csrfToken
+		return pages.PasswordPage(props, isAuthenticated)
+	})
+}
+
+func (app *application) updatePasswordPost(w http.ResponseWriter, r *http.Request) {
+	var form passwordChangeForm
+	err := app.decodePostForm(r, &form)
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	//validation
+	form.CheckField(validator.NotBlank(form.CurrentPassword), "currentPassword", "This field cannot be blank")
+	form.CheckField(validator.NotBlank(form.NewPassword), "newPassword", "This field cannot be blank")
+	form.CheckField(validator.NotBlank(form.ConfirmPassword), "confirmPassword", "This field cannot be blank")
+	form.CheckField(validator.MinChars(form.NewPassword, 8), "newPassword", "This field must be at least 8 characters long")
+	form.CheckField(form.NewPassword == form.ConfirmPassword, "confirmPassword", "This should must be same as New password")
+
+	props := pages.PasswordFormParams{
+		CurrentPassword: form.CurrentPassword,
+		NewPassword:     form.NewPassword,
+		ConfirmPassword: form.ConfirmPassword,
+		FieldErrors:     form.FieldErrors,
+	}
+
+	if !form.Valid() {
+		app.RenderPage(w, r, func(flash string, isAuthenticated bool, csrfToken string) templ.Component {
+			props.CSRFToken = csrfToken
+			return pages.PasswordPage(props, isAuthenticated)
+		})
+		return
+	}
+
+	// compare password
+	id := app.sessionManager.GetInt(r.Context(), "authenticatedUserID")
+
+	err = app.users.ComparePassword(id, form.CurrentPassword)
+	if err != nil {
+		if errors.Is(err, models.ErrInvalidCredentials) {
+			form.AddFieldError("currentPassword", "Incorrect Password")
+			props.FieldErrors = form.FieldErrors
+			app.RenderPage(w, r, func(flash string, isAuthenticated bool, csrfToken string) templ.Component {
+				props.CSRFToken = csrfToken
+				return pages.PasswordPage(props, isAuthenticated)
+			})
+			return
+		} else {
+			app.serverError(w, err)
+		}
+	}
+
+	// update password
+	err = app.users.UpdatePassword(id, form.NewPassword)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+	app.sessionManager.Put(r.Context(), "flash", "Password updated successfully!")
+	http.Redirect(w, r, "/account/view", http.StatusSeeOther)
 }

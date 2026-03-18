@@ -28,6 +28,9 @@ CipherBin provides a clean, minimal interface for creating, viewing, and managin
 | Sessions | SCS with Postgresql store |
 | Forms | go-playground/form |
 
+## Architecture
+![architecture diagram](assets/diagram.png)
+
 ## Project Structure
 
 ```
